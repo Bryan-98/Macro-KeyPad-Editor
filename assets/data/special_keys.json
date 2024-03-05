@@ -1,0 +1,221 @@
+{"special_keys":[{
+    "type": "Modifiers",
+    "keys":[{
+        "key": "LEFT CTRL",
+        "value": 128
+    },{
+        "key": "LEFT SHIFT",
+        "value": 129
+    },{
+        "key": "LEFT ALT",
+        "value": 130
+    },{
+        "key": "LEFT GUI",
+        "value": 131
+    },{
+        "key": "RIGHT CTRL",
+        "value": 132
+    },{
+        "key": "RIGHT SHIFT",
+        "value": 133
+    },{
+        "key": "RIGHT ALT",
+        "value": 134
+    },{
+        "key": "RIGHT GUI",
+        "value": 135
+    }]
+},{
+    "type": "Special",
+    "keys":[{
+        "key": "TAB",
+        "value": 179
+    },{
+        "key": "CAPS LOCK",
+        "value": 193
+    },{
+        "key": "BACKSPACE",
+        "value": 178
+    },{
+        "key": "RETURN",
+        "value": 176
+    },{
+        "key": "MENU",
+        "value": 237
+    }]
+},{
+    "type":"Navigation",
+    "keys":[{
+        "key": "INSERT",
+        "value": 209
+    },{
+        "key": "DELETE",
+        "value": 212
+    },{
+        "key": "HOME",
+        "value": 210
+    },{
+        "key": "END",
+        "value": 213
+    },{
+        "key": "PAGE UP",
+        "value": 211
+    },{
+        "key": "PAGE DOWN",
+        "value": 214
+    },{
+        "key": "UP ARROW",
+        "value": 218
+    },{
+        "key": "DOWN ARROW",
+        "value": 217
+    },{
+        "key": "LEFT ARROW",
+        "value": 216
+    },{
+        "key": "RIGHT ARROW",
+        "value": 215
+    }]
+},{
+    "type": "Keypad",
+    "keys":[{
+        "key": "NUM LOCK",
+        "value": 219
+    },{
+        "key": "KeyPad SLASH",
+        "value": 220
+    },{
+        "key": "KeyPad ASTERISK",
+        "value": 221
+    },{
+        "key": "KeyPad MINUS",
+        "value": 222
+    },{
+        "key": "KeyPad PLUS",
+        "value": 223
+    },{
+        "key": "KeyPad ENTER",
+        "value": 224
+    },{
+        "key": "KeyPad 1",
+        "value": 225
+    },{
+        "key": "KeyPad 2",
+        "value": 226
+    },{
+        "key": "KeyPad 3",
+        "value": 227
+    },{
+        "key": "KeyPad 4",
+        "value": 228
+    },{
+        "key": "KeyPad 5",
+        "value": 229
+    },{
+        "key": "KeyPad 6",
+        "value": 230
+    },{
+        "key": "KeyPad 7",
+        "value": 231
+    },{
+        "key": "KeyPad 8",
+        "value": 232
+    },{
+        "key": "KeyPad 9",
+        "value": 233
+    },{
+        "key": "KeyPad 0",
+        "value": 234
+    },{
+        "key": "KeyPad DOT",
+        "value": 235
+    }]
+},{
+    "type": "Functions",
+    "keys":[{
+        "key": "ESC",
+        "value": 177
+    },{
+        "key": "F1",
+        "value": 194
+    },{
+        "key": "F2",
+        "value": 195
+    },{
+        "key": "F3",
+        "value": 196
+    },{
+        "key": "F4",
+        "value": 197
+    },{
+        "key": "F5",
+        "value": 198
+    },{
+        "key": "F6",
+        "value": 199
+    },{
+        "key": "F7",
+        "value": 200
+    },{
+        "key": "F8",
+        "value": 201
+    },{
+        "key": "F9",
+        "value": 202
+    },{
+        "key": "F10",
+        "value": 203
+    },{
+        "key": "F11",
+        "value": 204
+    },{
+        "key": "F12",
+        "value": 205
+    },{
+        "key": "F13",
+        "value": 240
+    },{
+        "key": "F14",
+        "value": 241
+    },{
+        "key": "F15",
+        "value": 242
+    },{
+        "key": "F16",
+        "value": 243
+    },{
+        "key": "F17",
+        "value": 244
+    },{
+        "key": "F18",
+        "value": 245
+    },{
+        "key": "F19",
+        "value": 246
+    },{
+        "key": "F20",
+        "value": 247
+    },{
+        "key": "F21",
+        "value": 248
+    },{
+        "key": "F22",
+        "value": 249
+    },{
+        "key": "F23",
+        "value": 250
+    },{
+        "key": "F24",
+        "value": 251
+    }]
+},{
+    "type": "Custom",
+    "keys":[{
+        "key": "!",
+        "value": 33
+    },{
+        "key": "Q",
+        "value": 81
+    }]
+}]
+}

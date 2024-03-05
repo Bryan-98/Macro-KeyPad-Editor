@@ -1,0 +1,29 @@
+import time
+
+def send_macros_arduino(arduino, key, macro):
+    arduino.write(str.encode(f"1,{key},{macro}"))
+    time.sleep(1.5)
+    
+def send_rgb_values(arduino, rgb):
+    arduino.write(str.encode(f"2,0,{rgb}"))
+    time.sleep(1.5)
+
+def save_to_onboard(arduino):
+    arduino.write(str.encode(f"3,0,0,0,0"))
+    time.sleep(1.5)
+
+def set_encoder(arduino, switchNum, buttonState):
+    arduino.write(str.encode(f"4,{switchNum},{buttonState},0,0"))
+    time.sleep(1.5)
+
+def restore_saved_macros(arduino, macros):
+    arduino.write(str.encode(f"5;{macros}"))
+    time.sleep(1.5)
+
+def get_saved_macros(arduino):
+    arduino.write(str.encode(f"6"))
+    time.sleep(1.5)
+
+def read_arduino_data(arduino):
+    data = arduino.readline().strip()
+    return data.decode()
