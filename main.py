@@ -168,7 +168,7 @@ class App(ctk.CTk):
                 self.error_msg.set("")
                 self.msg_label.configure(text=self.error_msg.get())
                 self.activity_light.set_activity_status(True)
-                check_keypad_connection()
+                #check_keypad_connection()
 
             except(serial.SerialException) as e:
                 self.error_msg.set("*   Macro KeyPad not connected")
