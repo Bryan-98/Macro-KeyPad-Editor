@@ -240,7 +240,7 @@ class App(ctk.CTk):
 
         def hid_window():
             self.withdraw()
-            image=Image.open("assets\images\macro_pad_dark_icon.ico")
+            image=Image.open("assets\images\macro_pad_icon.ico")
             menu=(item('Show', show_window),item('Quit', quit_window))
             icon=pystray.Icon("name", image, "KeyPad Editor", menu)
             icon.run()
