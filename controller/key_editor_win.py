@@ -3,7 +3,7 @@ import customtkinter as ctk
 from tkinter import StringVar, IntVar
 
 class MacroEditor(ctk.CTkToplevel):
-    def __init__(self, parent, send_data):
+    def __init__(self, parent, send_data, curr_name):
         super().__init__(parent)
         self.grid_columnconfigure((0, 1,2), weight=1)
         self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
@@ -23,6 +23,7 @@ class MacroEditor(ctk.CTkToplevel):
         self.after(250, lambda: self.iconbitmap('./assets/images/macro_pad_icon.ico'))
         
         self.send_data = send_data
+        self.curr_name = curr_name
 
         self.create_widget()
 
@@ -45,14 +46,19 @@ class MacroEditor(ctk.CTkToplevel):
 
         def create_button_set(radioValue, dropdown, col):
             # Create radio buttons using a loop
-            i=1;
+            i=1
             for button_type in ['Modifier', 'Special', 'Navigation', 'KeyPad', 'Function', 'Custom']:
                 radio_btn = ctk.CTkRadioButton(self, text=f"{button_type}", command=lambda i = radioValue : self.radiobutton_event(i, dropdown), variable=radioValue, value=i)
                 radio_btn.grid(row=i, column=col, sticky= 'w', padx=20, pady=10)
                 i = i+1
 
         #Macro Key name
-        entry = ctk.CTkEntry(self, placeholder_text="Enter MacroKey Name")
+        if self.curr_name != None:
+            holder_text = self.curr_name
+        else:
+            holder_text = "Enter MacroKey Name"
+
+        entry = ctk.CTkEntry(self, placeholder_text=holder_text)
         entry.grid(row=0, column=1, padx=20, pady=10)
 
         # Dropdown 1
@@ -84,9 +90,7 @@ class MacroEditor(ctk.CTkToplevel):
 
         # Confirmation button
         ctk.CTkButton(self, text="Apply", command=lambda: self.applymacro(dropdown_var1.get(), dropdown_var2.get(), dropdown_var3.get(), entry.get())).grid(row=8, column=1, padx=20, pady=10)
-
-
-        
+      
 def getKeys(type):
 
     keys = []

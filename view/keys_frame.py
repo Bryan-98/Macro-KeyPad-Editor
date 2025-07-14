@@ -45,7 +45,7 @@ class KeyButtonFrame(ctk.CTkFrame):
             if self.toplevel_window  is None or not self.toplevel_window.winfo_exists():
                 self.row = row
                 self.col = col
-                self.toplevel_window  = MacroEditor(self, self.receive_data)  # create window if its None or destroyed
+                self.toplevel_window  = MacroEditor(self, self.receive_data, self.buttons[row][col].cget("text"))  # create window if its None or destroyed
                 self.toplevel_window.grab_set()
             else:
                 self.toplevel_window.focus()  # if window exists focus it
@@ -93,7 +93,7 @@ class KeyButtonFrame(ctk.CTkFrame):
         try:
             self.arduino = arduino
             self.disable_buttons("normal")
-            #self.restore_macros(self.macro_keys)
+            self.restore_macros(self.macro_keys)
         except:
             print("unabled to connect")
     
@@ -110,7 +110,8 @@ class KeyButtonFrame(ctk.CTkFrame):
                 self.buttons[i][j].configure(text=numText[i][j])
 
         for i in macroKeys:
-            self.macro_keys[i] = macroKeys[i]
+            self.macro_keys.update({int(i): macroKeys[i]})
+
 
     def restore_macros(self, macroKeys):
         saved_macros = []

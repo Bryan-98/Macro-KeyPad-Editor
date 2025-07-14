@@ -90,13 +90,13 @@ class App(ctk.CTk):
             with open(file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
-        led_light = data['RGB']
-        macro_names = data['macroNames']
-        macro_keys = data['macrosKeys']
+            led_light = data['RGB']
+            macro_names = data['macroNames']
+            macro_keys = data['macrosKeys']
 
-        self.led_frame.set_rgb(led_light[0], led_light[1], led_light[2])
-        self.key_button_widget.set_macro_keys(macro_names,macro_keys)
-        self.key_button_widget.restore_macros(macro_keys)
+            self.led_frame.set_rgb(led_light[0], led_light[1], led_light[2])
+            self.key_button_widget.set_macro_keys(macro_names,macro_keys)
+            self.key_button_widget.restore_macros(macro_keys)
 
     def retry_widget(self):
         #Label
@@ -179,7 +179,7 @@ class App(ctk.CTk):
             if self.selectedPort != None:
                 file = askopenfilename(filetypes =[('Json File', '*.json')])
                 try:
-                    self.arduino.readline()
+                    #self.arduino.readline()
                     self.restore_profile(file)
                 except(serial.SerialException) as e:
                     self.error_msg.set("*   Macro KeyPad not connected, can not load profile")
