@@ -1,4 +1,4 @@
-import json, pystray, serial.tools.list_ports, threading
+import json, pystray, serial
 import customtkinter as ctk
 from tkinter import Menu, StringVar
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -43,6 +43,9 @@ class App(ctk.CTk):
         self.onboard_confirmation = None
         self.com_selector = None
         self.splah_win = None
+
+        self.default_num_keypad_row = 3
+        self.default_num_keypad_col = 4
 
         self.start_splash_win()
 
@@ -115,14 +118,14 @@ class App(ctk.CTk):
 
         #Led picker widget
         leds = last_saved_led(self.last_saved_profile.get())
-        self.led_frame = LedFrame(self)
+        self.led_frame = LedFrame(self, 2)
         self.led_frame.init_set_rgb(leds[0], leds[1], leds[2])
         self.led_frame.configure(border_width=2.5)
         self.led_frame.grid(row=0, column=0, padx=30, pady=15, ipadx=30, ipady=20)
 
         #Key buttons widget
         macro_names, macro_keys = last_saved_keys(self.last_saved_profile.get())
-        self.key_button_widget = KeyButtonFrame(self)
+        self.key_button_widget = KeyButtonFrame(self,self.default_num_keypad_row,self.default_num_keypad_col, False)
         self.key_button_widget.set_macro_keys(macro_names,macro_keys)
         self.key_button_widget.configure(border_width=2.5)
         self.key_button_widget.grid(row=0, column=1, padx=30, pady=30, ipadx=20, ipady=20)
@@ -148,16 +151,6 @@ class App(ctk.CTk):
                 self.error_msg.set("*   Macro KeyPad not connected, can not upload to onboard memory")
                 self.msg_label.configure(text=self.error_msg.get())
 
-        def check_keypad_connection():
-
-            def arduino_connection_test():
-                while True:
-                    if not self.encoder_widget.check_arduino_connection():
-                        self.activity_light.set_activity_status(False)
-                        break
-            threading.Thread(target=arduino_connection_test, daemon=True).start()
-            
-
         def connect_to_keypad():
             try:
                 self.start_selector_win()
@@ -174,6 +167,15 @@ class App(ctk.CTk):
                 self.error_msg.set("*   Macro KeyPad not connected")
                 self.msg_label.configure(text=self.error_msg.get())
                 self.activity_light.set_activity_status(False)
+
+        def encoder_visibility(is_visible):
+            try:
+                if bool(is_visible) == False:
+                    self.encoder_widget.grid_forget()
+                else:
+                    self.encoder_widget.grid(row=0, column=2, padx=30, pady=30, ipadx=20, ipady=20)
+            except():
+                print("No widget Found")
 
         def open_file():
             if self.selectedPort != None:
@@ -219,6 +221,8 @@ class App(ctk.CTk):
         arduinomenu = Menu(menubar, tearoff=0)
         arduinomenu.add_command(label="Connect", command=connect_to_keypad)
         arduinomenu.add_command(label="Upload", command=upload_onboard)
+        arduinomenu.add_command(label="Hide Encoder", command=lambda:encoder_visibility(False))
+        arduinomenu.add_command(label="Show Encoder", command=lambda:encoder_visibility(True))
         menubar.add_cascade(label="KeyPad", menu=arduinomenu)
 
         # helpmenu = Menu(menubar, tearoff=0)

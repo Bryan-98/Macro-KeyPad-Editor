@@ -6,7 +6,7 @@ from controller.arduino_connection import send_rgb_values
 from controller.create_save_folder import last_saved_led
 
 class LedFrame(ctk.CTkFrame):
-    def __init__(self, container):
+    def __init__(self, container, ledType):
         super().__init__(container)
         self.grid_columnconfigure((0,1,2), weight=1)
         self.grid_rowconfigure((0, 1, 2, 3), weight=1)
@@ -22,6 +22,8 @@ class LedFrame(ctk.CTkFrame):
         self.slider_green = None
         self.slider_blue = None
         self.error_msg = StringVar(self)
+
+        self.ledType = ledType
 
         #Creating led widgets
         self.create_widgets()
@@ -86,7 +88,11 @@ class LedFrame(ctk.CTkFrame):
     def save_rgb(self):
         try:
             rgb = f'{self.red_var.get()},{self.green_var.get()},{self.blue_var.get()}'
-            send_rgb_values(self.arduino, rgb)
+
+            if self.ledType != 2:
+                self.ledType = 7
+
+            send_rgb_values(self.arduino, rgb, self.ledType)
             
         except(serial.SerialException) as e:
                 self.slider_red.configure(state="disabled")

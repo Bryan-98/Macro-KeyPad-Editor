@@ -1,6 +1,6 @@
 import os, json, glob
 
-
+#Keep incase user removes default_profiles.json
 default_profile = {
        "RGB": [
       "255",

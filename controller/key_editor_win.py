@@ -1,11 +1,13 @@
 import json
 import customtkinter as ctk
 from tkinter import StringVar, IntVar
+from view.led_frame import LedFrame
+from controller.create_key_function_frame import KeyFunctionFrame
 
 class MacroEditor(ctk.CTkToplevel):
-    def __init__(self, parent, send_data, curr_name):
+    def __init__(self, parent, send_data, curr_name, is_key_backlight):
         super().__init__(parent)
-        self.grid_columnconfigure((0, 1,2), weight=1)
+        self.grid_columnconfigure((0, 1, 2, 3), weight=1)
         self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
 
         self.title("Macro Editor")
@@ -16,7 +18,7 @@ class MacroEditor(ctk.CTkToplevel):
         window_height = 500
 
         self.minsize(window_width,window_height)
-        self.maxsize(window_width,window_height)
+        # self.maxsize(window_width,window_height)
         x = (s_width / 2) - (window_width/2)
         y = (s_height / 2) - (window_height/2)
         self.geometry('%dx%d+%d+%d' % (window_width, window_height, x, y))
@@ -24,6 +26,8 @@ class MacroEditor(ctk.CTkToplevel):
         
         self.send_data = send_data
         self.curr_name = curr_name
+
+        self.is_key_backlight = is_key_backlight
 
         self.create_widget()
 
@@ -44,14 +48,6 @@ class MacroEditor(ctk.CTkToplevel):
 
     def create_widget(self):
 
-        def create_button_set(radioValue, dropdown, col):
-            # Create radio buttons using a loop
-            i=1
-            for button_type in ['Modifier', 'Special', 'Navigation', 'KeyPad', 'Function', 'Custom']:
-                radio_btn = ctk.CTkRadioButton(self, text=f"{button_type}", command=lambda i = radioValue : self.radiobutton_event(i, dropdown), variable=radioValue, value=i)
-                radio_btn.grid(row=i, column=col, sticky= 'w', padx=20, pady=10)
-                i = i+1
-
         #Macro Key name
         if self.curr_name != None:
             holder_text = self.curr_name
@@ -59,37 +55,32 @@ class MacroEditor(ctk.CTkToplevel):
             holder_text = "Enter MacroKey Name"
 
         entry = ctk.CTkEntry(self, placeholder_text=holder_text)
-        entry.grid(row=0, column=1, padx=20, pady=10)
+        entry.grid(row=0, column=2, padx=20, pady=10)
 
-        # Dropdown 1
-        macro1 = []
-        dropdown_var1 = StringVar(self)
-        dropdown_var1.set("0")
-        dropdown1 = ctk.CTkOptionMenu(self, variable=dropdown_var1, values=macro1, dynamic_resizing=False)
-        dropdown1.grid(row=7, column=0, padx=20, pady=10)        
-        radio1 = IntVar(self)
-        create_button_set(radio1,dropdown1,0)
+        #Key function selection frames
+        self.key_function_1 = KeyFunctionFrame(self)
+        self.key_function_1.configure(border_width=2.5)
+        self.key_function_1.grid(row=1, column=0, padx=30, pady=15, ipadx=30, ipady=20)
 
-        # Dropdown 2
-        macro2 = []
-        dropdown_var2 = StringVar(self)
-        dropdown_var2.set("0")
-        dropdown2 = ctk.CTkOptionMenu(self, variable=dropdown_var2, values=macro2, dynamic_resizing=False)
-        dropdown2.grid(row=7, column=1, padx=20, pady=10)        
-        radio2 = IntVar(self)
-        create_button_set(radio2,dropdown2,1)
+        self.key_function_2 = KeyFunctionFrame(self)
+        self.key_function_2.configure(border_width=2.5)
+        self.key_function_2.grid(row=1, column=1, padx=30, pady=15, ipadx=30, ipady=20)
 
-        # Dropdown 3
-        macro3 = []
-        dropdown_var3 = StringVar(self)
-        dropdown_var3.set("0")
-        dropdown3 = ctk.CTkOptionMenu(self, variable=dropdown_var3, values=macro3, dynamic_resizing=False)
-        dropdown3.grid(row=7, column=2, padx=20, pady=10)        
-        radio3 = IntVar(self)
-        create_button_set(radio3,dropdown3,2)
+        self.key_function_3 = KeyFunctionFrame(self)
+        self.key_function_3.configure(border_width=2.5)
+        self.key_function_3.grid(row=1, column=2, padx=30, pady=15, ipadx=30, ipady=20)
+
+        #Led selection Frame
+        if self.is_key_backlight != False:
+            self.led_frame = LedFrame(self)
+            self.led_frame.init_set_rgb(255, 0, 255)
+            self.led_frame.configure(border_width=2.5)
+            self.led_frame.grid(row=1, column=3, padx=30, pady=15, ipadx=30, ipady=20)
+
 
         # Confirmation button
-        ctk.CTkButton(self, text="Apply", command=lambda: self.applymacro(dropdown_var1.get(), dropdown_var2.get(), dropdown_var3.get(), entry.get())).grid(row=8, column=1, padx=20, pady=10)
+        ctk.CTkButton(self, text="Apply", 
+                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), self.key_function_2.get_key_function(), self.key_function_3.get_key_function(), entry.get())).grid(row=8, column=2, padx=20, pady=10)
       
 def getKeys(type):
 
