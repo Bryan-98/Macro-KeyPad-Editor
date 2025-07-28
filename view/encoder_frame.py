@@ -46,34 +46,34 @@ class EncoderFrame(ctk.CTkFrame):
         # #Encoder 1
         self.encoder1_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable1, values=self.options, command=lambda event: update_dropdown(1, event))
         self.encoder1_dropdown.grid(row=0, column=0, padx=10, pady=10)
-        self.encoder1_dropdown.configure(text_color="black", button_hover_color=("black", "lightgray"), fg_color="white", button_color="white", dynamic_resizing=False, state="disabled")
+        self.encoder1_dropdown.configure(dynamic_resizing=False, state="disabled")
         self.dropdown_variable1.set('Master Volume')
 
         self.switch_var1.set(value="on")
         self.switch1 = ctk.CTkSwitch(self, command= lambda:self.switch_audio(1, self.encoder1_dropdown, self.switch_var1), variable=self.switch_var1, onvalue="on", offvalue="off")
-        self.switch1.configure(progress_color=red_color, fg_color=green_color, text="AW UP / AW DN", state="disabled")
+        self.switch1.configure(text="AW UP / AW DN", state="disabled")
         self.switch1.grid(row=0, column=1, padx=10, pady=10, sticky= 'w')
 
         #Encoder 2
         self.encoder2_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable2, values=self.options, command=lambda event: update_dropdown(2, event))
         self.encoder2_dropdown.grid(row=1, column=0, padx=10, pady=10)
-        self.encoder2_dropdown.configure(text_color="black", button_hover_color=("black", "lightgray"), fg_color="white", button_color="white", dynamic_resizing=False, state="disabled")
+        self.encoder2_dropdown.configure(dynamic_resizing=False, state="disabled")
         self.dropdown_variable2.set('Master Volume')
 
         self.switch_var2.set(value="on")
         self.switch2 = ctk.CTkSwitch(self, command= lambda:self.switch_audio(2, self.encoder2_dropdown, self.switch_var2), variable=self.switch_var2, onvalue="on", offvalue="off")
-        self.switch2.configure(progress_color=red_color, fg_color=green_color, text="AW LT / AW RT", state="disabled")
+        self.switch2.configure(text="AW LT / AW RT", state="disabled")
         self.switch2.grid(row=1, column=1, padx=10, pady=10, sticky= 'w')
 
         #Encoder 3
         self.encoder3_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable3, values=self.options, command=lambda event: update_dropdown(3, event))
         self.encoder3_dropdown.grid(row=2, column=0, padx=10, pady=10)
-        self.encoder3_dropdown.configure(text_color="black", button_hover_color=("black", "lightgray"), fg_color="white", button_color="white", dynamic_resizing=False, state="disabled")
+        self.encoder3_dropdown.configure(dynamic_resizing=False, state="disabled")
         self.dropdown_variable3.set('Master Volume')
 
         self.switch_var3.set(value="on")
         self.switch3 = ctk.CTkSwitch(self, command= lambda:self.switch_audio(3, self.encoder3_dropdown, self.switch_var3), variable=self.switch_var3, onvalue="on", offvalue="off")
-        self.switch3.configure(progress_color=red_color, fg_color=green_color, text="PG UP / PG DN", state="disabled")
+        self.switch3.configure(text="PG UP / PG DN", state="disabled")
         self.switch3.grid(row=2, column=1, padx=10, pady=10, sticky= 'w')
 
         def update_dropdown(slider, event):

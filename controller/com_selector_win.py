@@ -45,10 +45,9 @@ class ComSelector(ctk.CTkToplevel):
         ctk.CTkLabel(self, text="Select COM Port:").pack()
         
         self.com_options = ctk.CTkOptionMenu(self,values = com_port_names, command=option_selection, variable = self.selectedPort)
-        self.com_options.configure(text_color="black", button_hover_color=("black", "lightgray"), fg_color="white", button_color="white",)
         self.com_options.pack(padx=10, pady=10)
 
-        ctk.CTkButton(self, text="Submit", fg_color="white", text_color="black", hover_color=("black", "lightgray"), command=close_window).pack(padx=10, pady=10)
+        ctk.CTkButton(self, text="Submit", command=close_window).pack(padx=10, pady=10)
 
         def getPort(self, port):
             if self.selectedPort.get() != "":

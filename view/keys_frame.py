@@ -47,7 +47,7 @@ class KeyButtonFrame(ctk.CTkFrame):
         for i in range(self.num_key_row):
             for j in range(self.num_key_col):
                 current_button = ctk.CTkButton(self, text=self.num_pad_text[i][j], command=lambda row=i, col=j: self.update_text(row, col))
-                current_button.configure(height=80, width=80, fg_color="white", text_color="black", hover_color=("black", "lightgray"), state="disabled")
+                current_button.configure(height=80, width=80, state="disabled")
                 self.buttons[i][j] = current_button
                 current_button.grid(row=i, column=j, padx=10, pady=10)
 

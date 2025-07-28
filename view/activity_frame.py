@@ -21,10 +21,10 @@ class ActivityLight(ctk.CTkFrame):
         activity = ctk.CTkImage(dark_image=Image.open(self.disconnected_path),size=(20, 20))
 
         self.light = ctk.CTkLabel(self, text="", image=activity)
-        self.light.grid(row=0, column=0, padx=10, pady=10)
+        self.light.grid(row=0, column=0)
 
-        self.label = ctk.CTkLabel(self, text="Dissconected")
-        self.label.grid(row=0, column=1, padx=10, pady=10)
+        self.label = ctk.CTkLabel(self, text="Disconnected")
+        self.label.grid(row=0, column=1)
 
     def set_activity_status(self, connection):
         if connection:
@@ -33,11 +33,11 @@ class ActivityLight(ctk.CTkFrame):
             self.light_status = True
         else:
             activity = ctk.CTkImage(dark_image=Image.open(self.disconnected_path),size=(20, 20))
-            self.label.configure(text="Dissconected")
+            self.label.configure(text="Disconnected")
             self.light_status = False
             
         self.light.configure(image=activity)
     
     def get_activity_status(self):
-        return self.light_status;
+        return self.light_status
 

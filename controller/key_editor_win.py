@@ -55,7 +55,7 @@ class MacroEditor(ctk.CTkToplevel):
             holder_text = "Enter MacroKey Name"
 
         entry = ctk.CTkEntry(self, placeholder_text=holder_text)
-        entry.grid(row=0, column=2, padx=20, pady=10)
+        entry.grid(row=0, column=0, columnspan=4, padx=20, pady=10)
 
         #Key function selection frames
         self.key_function_1 = KeyFunctionFrame(self)
@@ -80,7 +80,7 @@ class MacroEditor(ctk.CTkToplevel):
 
         # Confirmation button
         ctk.CTkButton(self, text="Apply", 
-                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), self.key_function_2.get_key_function(), self.key_function_3.get_key_function(), entry.get())).grid(row=8, column=2, padx=20, pady=10)
+                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), self.key_function_2.get_key_function(), self.key_function_3.get_key_function(), entry.get())).grid(row=8, column=0, columnspan=4, padx=20, pady=10)
       
 def getKeys(type):
 

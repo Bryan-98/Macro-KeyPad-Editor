@@ -24,6 +24,12 @@ def get_saved_macros(arduino):
     arduino.write(str.encode(f"6"))
     time.sleep(1.5)
 
+def get_device_info(arduino):
+    arduino.write(str.encode(f"8,0,0,0,0"))
+    time.sleep(2)
+    device_info = arduino.readline().decode('utf-8').strip()
+    return device_info
+
 def read_arduino_data(arduino):
     data = arduino.readline().strip()
     return data.decode()

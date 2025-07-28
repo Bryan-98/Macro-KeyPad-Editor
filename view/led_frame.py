@@ -9,7 +9,7 @@ class LedFrame(ctk.CTkFrame):
     def __init__(self, container, ledType):
         super().__init__(container)
         self.grid_columnconfigure((0,1,2), weight=1)
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 5, 6 ,7), weight=1)
 
         #Setting variables
         self.arduino = None
@@ -31,9 +31,9 @@ class LedFrame(ctk.CTkFrame):
     def create_widgets(self):
         
         #Canvas to disaply current window
-        self.led = tk.Canvas(self, bg="blue", height=50, width=50)
-        self.led.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-        
+        self.led = tk.Canvas(self, bg="blue", height=100, width=175)
+        self.led.grid(row=0, column=0, columnspan=3, padx=10, pady=25)
+
         #Setting default vaules for led windo and widgets
         self.red_var.set(0)
         self.green_var.set(251)
@@ -53,36 +53,54 @@ class LedFrame(ctk.CTkFrame):
         blue_color = (f'#{56:02x}{64:02x}{181:02x}')
 
         #Creating the slider and entery to the Red slider
-        self.slider_red = ctk.CTkSlider(self, from_=0, to=255, variable=self.red_var, orientation='vertical')
+        self.slider_red = ctk.CTkSlider(self, from_=0, to=255, variable=self.red_var, orientation='horizontal')
         self.slider_red.configure(button_color="white",button_hover_color="darkgrey", number_of_steps=255, progress_color=red_color, command=change_canvas, state="disabled")
-        self.slider_red.grid(row=1, column=0, padx=10, pady=10)
+        self.slider_red.grid(row=1, column=0, columnspan=3, padx=10, pady=5)
 
         red_entry = ctk.CTkEntry(self, textvariable=StringVar(self, value=self.red_var.get()))
         red_entry.configure(width=40, height=30, state="disabled")
-        red_entry.grid(row=2, column=0, padx=10, pady=10)
+        red_entry.grid(row=2, column=1, padx=10, pady=2)
+
+        red_min = ctk.CTkLabel(self, text="0")
+        red_min.grid(row=2, column=0, padx=10, pady=0)
+
+        red_max = ctk.CTkLabel(self, text="255")
+        red_max.grid(row=2, column=2, padx=10, pady=0)
 
         #Creating the slider and entery to the Green slider
-        self.slider_green = ctk.CTkSlider(self, from_=0, to=255, variable=self.green_var, orientation='vertical')
+        self.slider_green = ctk.CTkSlider(self, from_=0, to=255, variable=self.green_var, orientation='horizontal')
         self.slider_green.configure(button_color="white",button_hover_color="darkgrey", number_of_steps=255, progress_color=green_color, command=change_canvas, state="disabled")
-        self.slider_green.grid(row=1, column=1, padx=10, pady=10)
+        self.slider_green.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
 
         green_entry = ctk.CTkEntry(self, textvariable=StringVar(self, value=self.green_var.get()))
         green_entry.configure(width=40, height=30, state="disabled")
-        green_entry.grid(row=2, column=1, padx=10, pady=10)
+        green_entry.grid(row=4, column=1, padx=10, pady=2)
+
+        green_min = ctk.CTkLabel(self, text="0")
+        green_min.grid(row=4, column=0, padx=10, pady=0)
+
+        green_max = ctk.CTkLabel(self, text="255")
+        green_max.grid(row=4, column=2, padx=10, pady=0)
 
         #Creating the slider and entery to the blue slider
-        self.slider_blue = ctk.CTkSlider(self, from_=0, to=255, variable=self.blue_var, orientation='vertical')
+        self.slider_blue = ctk.CTkSlider(self, from_=0, to=255, variable=self.blue_var, orientation='horizontal')
         self.slider_blue.configure(button_color="white",button_hover_color="darkgrey", number_of_steps=255, progress_color=blue_color, command=change_canvas, state="disabled")
-        self.slider_blue.grid(row=1, column=2, padx=10, pady=10)
+        self.slider_blue.grid(row=5, column=0, columnspan=3, padx=10, pady=10)
 
         blue_entry = ctk.CTkEntry(self, textvariable=StringVar(self, value=self.blue_var.get()))
         blue_entry.configure(width=40, height=30, state="disabled")
-        blue_entry.grid(row=2, column=2, padx=10, pady=10)
+        blue_entry.grid(row=6, column=1, padx=10, pady=2)
+
+        blue_min = ctk.CTkLabel(self, text="0")
+        blue_min.grid(row=6, column=0, padx=10, pady=0)
+
+        blue_max = ctk.CTkLabel(self, text="255")
+        blue_max.grid(row=6, column=2, padx=10, pady=0)
 
         #Apply button send values to arduino
         self.apply_btn = ctk.CTkButton(self, text="Apply", command=self.save_rgb)
-        self.apply_btn.configure(fg_color="white", text_color="black", hover_color=("black", "lightgray"), state="disabled")
-        self.apply_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+        self.apply_btn.configure(state="disabled")
+        self.apply_btn.grid(row=7, column=0, columnspan=3, padx=10, pady=25)
 
     #Send rgb values to arduino
     def save_rgb(self):

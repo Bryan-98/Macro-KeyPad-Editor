@@ -8,12 +8,12 @@ from view.encoder_frame import EncoderFrame
 from view.keys_frame import KeyButtonFrame
 from view.led_frame import LedFrame
 from controller.save_to_onboard_win import OnBoardConfirmation
+from controller.arduino_connection import get_device_info
 from model.custom_profile import create_user_profile
 from controller.com_selector_win import ComSelector
 from controller.create_save_folder import init_folder, last_saved_profile, last_saved_led, last_saved_keys
 from view.splash_screen_win import SplashScreen
 from view.activity_frame import ActivityLight
-
 
 class App(ctk.CTk):
 
@@ -26,9 +26,9 @@ class App(ctk.CTk):
         self.minsize(size[0],size[1])
         self.maxsize(size[0],size[1])
         self.grid_columnconfigure((0, 1, 2), weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
         self.iconbitmap("assets\images\macro_pad_icon.ico")
-
+        
         self.selectedPort = None
         self.arduino = None
         self.msg_label = None
@@ -43,6 +43,7 @@ class App(ctk.CTk):
         self.onboard_confirmation = None
         self.com_selector = None
         self.splah_win = None
+        self.device_entry = StringVar(self)
 
         self.default_num_keypad_row = 3
         self.default_num_keypad_col = 4
@@ -108,32 +109,37 @@ class App(ctk.CTk):
 
     def create_widget(self):
 
+        #Device Name
+        self.device_entry.set("Audio Macro Keypad")
+        self.device_entry = ctk.CTkLabel(self, text=self.device_entry.get(), font=("cascadia code", 25))
+        self.device_entry.grid(row=0, column=0, columnspan=2, padx=10, pady=15, ipadx=10, ipady=20)
+
         #Activity Light
         self.activity_light = ActivityLight(self)
-        self.activity_light.grid(row=0, column=0, padx=30, pady=15, sticky='nw')
+        self.activity_light.grid(row=0, column=2, padx=10, pady=10)
 
         # displas error message
         self.msg_label = ctk.CTkLabel(self, text=self.error_msg.get(), text_color="red")
-        self.msg_label.grid(row=0, column=1, padx=30, pady=15, sticky='s')
+        self.msg_label.grid(row=2, column=0, columnspan=3, padx=30, pady=15, sticky='s')
 
         #Led picker widget
         leds = last_saved_led(self.last_saved_profile.get())
         self.led_frame = LedFrame(self, 2)
         self.led_frame.init_set_rgb(leds[0], leds[1], leds[2])
         self.led_frame.configure(border_width=2.5)
-        self.led_frame.grid(row=0, column=0, padx=30, pady=15, ipadx=30, ipady=20)
+        self.led_frame.grid(row=1, column=0, padx=30, pady=15, ipadx=30, ipady=30)
 
         #Key buttons widget
         macro_names, macro_keys = last_saved_keys(self.last_saved_profile.get())
         self.key_button_widget = KeyButtonFrame(self,self.default_num_keypad_row,self.default_num_keypad_col, False)
         self.key_button_widget.set_macro_keys(macro_names,macro_keys)
         self.key_button_widget.configure(border_width=2.5)
-        self.key_button_widget.grid(row=0, column=1, padx=30, pady=30, ipadx=20, ipady=20)
+        self.key_button_widget.grid(row=1, column=1, padx=30, pady=30, ipadx=30, ipady=30)
         
         #Encoder widget
         self.encoder_widget = EncoderFrame(self)
         self.encoder_widget.configure(border_width=2.5)
-        self.encoder_widget.grid(row=0, column=2, padx=30, pady=30, ipadx=20, ipady=20)
+        self.encoder_widget.grid(row=1, column=2, padx=30, pady=30, ipadx=30, ipady=30)
         
     def create_menu(self):
 
@@ -177,11 +183,19 @@ class App(ctk.CTk):
             except():
                 print("No widget Found")
 
+        def device_info():
+            try:
+                device_info = get_device_info(self.arduino)
+                print(device_info)
+            except(serial.SerialException) as e:
+                print(e)
+                print("\nDevice not connected")
+                
+
         def open_file():
             if self.selectedPort != None:
                 file = askopenfilename(filetypes =[('Json File', '*.json')])
                 try:
-                    #self.arduino.readline()
                     self.restore_profile(file)
                 except(serial.SerialException) as e:
                     self.error_msg.set("*   Macro KeyPad not connected, can not load profile")
@@ -221,8 +235,7 @@ class App(ctk.CTk):
         arduinomenu = Menu(menubar, tearoff=0)
         arduinomenu.add_command(label="Connect", command=connect_to_keypad)
         arduinomenu.add_command(label="Upload", command=upload_onboard)
-        arduinomenu.add_command(label="Hide Encoder", command=lambda:encoder_visibility(False))
-        arduinomenu.add_command(label="Show Encoder", command=lambda:encoder_visibility(True))
+        arduinomenu.add_command(label="Device Info", command=device_info)
         menubar.add_cascade(label="KeyPad", menu=arduinomenu)
 
         # helpmenu = Menu(menubar, tearoff=0)
@@ -263,6 +276,7 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
 
+    ctk.set_default_color_theme("assets/themes/default_theme.json")
     app = App('KeyPad Editor', (1100,619))
     app.mainloop()
     
