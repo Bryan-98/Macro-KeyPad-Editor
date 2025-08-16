@@ -2,11 +2,10 @@ import serial
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import StringVar, IntVar
-from controller.arduino_connection import send_rgb_values
-from controller.create_save_folder import last_saved_led
+from controller.arduino_connection import send_rgb_values, send_key_rgb_values
 
 class LedFrame(ctk.CTkFrame):
-    def __init__(self, container, ledType):
+    def __init__(self, container, row, col, is_underglow):
         super().__init__(container)
         self.grid_columnconfigure((0,1,2), weight=1)
         self.grid_rowconfigure((0, 1, 2, 3, 5, 6 ,7), weight=1)
@@ -23,7 +22,10 @@ class LedFrame(ctk.CTkFrame):
         self.slider_blue = None
         self.error_msg = StringVar(self)
 
-        self.ledType = ledType
+        self.is_underglow = is_underglow
+
+        self.row = row
+        self.col = col
 
         #Creating led widgets
         self.create_widgets()
@@ -98,7 +100,7 @@ class LedFrame(ctk.CTkFrame):
         blue_max.grid(row=6, column=2, padx=10, pady=0)
 
         #Apply button send values to arduino
-        self.apply_btn = ctk.CTkButton(self, text="Apply", command=self.save_rgb)
+        self.apply_btn = ctk.CTkButton(self, text="Apply", command=lambda:self.save_rgb() if self.is_underglow == True else self.save_key_rgb())
         self.apply_btn.configure(state="disabled")
         self.apply_btn.grid(row=7, column=0, columnspan=3, padx=10, pady=25)
 
@@ -106,11 +108,18 @@ class LedFrame(ctk.CTkFrame):
     def save_rgb(self):
         try:
             rgb = f'{self.red_var.get()},{self.green_var.get()},{self.blue_var.get()}'
+            send_rgb_values(self.arduino, rgb)
+            
+        except(serial.SerialException) as e:
+                self.slider_red.configure(state="disabled")
+                self.slider_green.configure(state="disabled")
+                self.slider_blue.configure(state="disabled")
+                self.apply_btn.configure(state="disabled")
 
-            if self.ledType != 2:
-                self.ledType = 7
-
-            send_rgb_values(self.arduino, rgb, self.ledType)
+    def save_key_rgb(self):
+        try:
+            rgb = f'{self.red_var.get()},{self.green_var.get()},{self.blue_var.get()}'
+            send_key_rgb_values(self.arduino, self.row, self.col, rgb)
             
         except(serial.SerialException) as e:
                 self.slider_red.configure(state="disabled")
@@ -129,10 +138,6 @@ class LedFrame(ctk.CTkFrame):
         self.slider_red.configure(state="normal")
         self.slider_green.configure(state="normal")
         self.slider_blue.configure(state="normal")
-        self.save_rgb()
-    
-    def get_arduino_status(self):
-        return self.error_msg.get()
     
     def init_set_rgb(self, red, green, blue):
         self.red_var.set(red)

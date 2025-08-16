@@ -3,7 +3,9 @@ import json, time
 def create_user_profile(rgb, macroNames, macrosKeys):
     
     profile = {
-        "RGB": rgb,
+        "underGlow": rgb,
+        "keysRgb": rgb,
+        "rgb": rgb,
         "macroNames": macroNames,
         "macrosKeys" : macrosKeys
     }

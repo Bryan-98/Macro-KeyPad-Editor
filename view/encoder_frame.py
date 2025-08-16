@@ -52,7 +52,7 @@ class EncoderFrame(ctk.CTkFrame):
         self.switch_var1.set(value="on")
         self.switch1 = ctk.CTkSwitch(self, command= lambda:self.switch_audio(1, self.encoder1_dropdown, self.switch_var1), variable=self.switch_var1, onvalue="on", offvalue="off")
         self.switch1.configure(text="AW UP / AW DN", state="disabled")
-        self.switch1.grid(row=0, column=1, padx=10, pady=10, sticky= 'w')
+        self.switch1.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
         #Encoder 2
         self.encoder2_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable2, values=self.options, command=lambda event: update_dropdown(2, event))
@@ -63,7 +63,7 @@ class EncoderFrame(ctk.CTkFrame):
         self.switch_var2.set(value="on")
         self.switch2 = ctk.CTkSwitch(self, command= lambda:self.switch_audio(2, self.encoder2_dropdown, self.switch_var2), variable=self.switch_var2, onvalue="on", offvalue="off")
         self.switch2.configure(text="AW LT / AW RT", state="disabled")
-        self.switch2.grid(row=1, column=1, padx=10, pady=10, sticky= 'w')
+        self.switch2.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
         #Encoder 3
         self.encoder3_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable3, values=self.options, command=lambda event: update_dropdown(3, event))

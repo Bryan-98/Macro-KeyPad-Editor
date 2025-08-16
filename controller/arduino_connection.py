@@ -4,8 +4,8 @@ def send_macros_arduino(arduino, key, macro):
     arduino.write(str.encode(f"1,{key},{macro}"))
     time.sleep(1.5)
     
-def send_rgb_values(arduino, rgb, ledType):
-    arduino.write(str.encode(f"{ledType},0,{rgb}"))
+def send_rgb_values(arduino, rgb):
+    arduino.write(str.encode(f"2,0,{rgb}"))
     time.sleep(1.5)
 
 def save_to_onboard(arduino):
@@ -23,6 +23,9 @@ def restore_saved_macros(arduino, macros):
 def get_saved_macros(arduino):
     arduino.write(str.encode(f"6"))
     time.sleep(1.5)
+
+def send_key_rgb_values(arduino, rgb, row, col):
+    arduino.write(str.encode(f"7,{row},{col},{rgb}"))    
 
 def get_device_info(arduino):
     arduino.write(str.encode(f"8,0,0,0,0"))

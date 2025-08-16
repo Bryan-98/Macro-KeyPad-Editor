@@ -1,14 +1,13 @@
 import json
 import customtkinter as ctk
-from tkinter import StringVar, IntVar
 from view.led_frame import LedFrame
 from controller.create_key_function_frame import KeyFunctionFrame
 
 class MacroEditor(ctk.CTkToplevel):
-    def __init__(self, parent, send_data, curr_name, is_key_backlight):
+    def __init__(self, parent, send_data, curr_name, row, col, is_key_backlight, arduino):
         super().__init__(parent)
         self.grid_columnconfigure((0, 1, 2, 3), weight=1)
-        self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8), weight=1)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
 
         self.title("Macro Editor")
         s_height = self.winfo_screenheight()
@@ -16,6 +15,10 @@ class MacroEditor(ctk.CTkToplevel):
 
         window_width = 899
         window_height = 500
+
+        self.row = row
+        self.col = col
+        self.arduino = arduino
 
         self.minsize(window_width,window_height)
         # self.maxsize(window_width,window_height)
@@ -28,6 +31,7 @@ class MacroEditor(ctk.CTkToplevel):
         self.curr_name = curr_name
 
         self.is_key_backlight = is_key_backlight
+        self.led_frame = None
 
         self.create_widget()
 
@@ -71,16 +75,22 @@ class MacroEditor(ctk.CTkToplevel):
         self.key_function_3.grid(row=1, column=2, padx=30, pady=15, ipadx=30, ipady=20)
 
         #Led selection Frame
-        if self.is_key_backlight != False:
-            self.led_frame = LedFrame(self)
+        if self.is_key_backlight == True:
+            self.led_frame = LedFrame(self, self.row, self.col, False)
             self.led_frame.init_set_rgb(255, 0, 255)
             self.led_frame.configure(border_width=2.5)
+            self.led_frame.set_arduino_connection(self.arduino)
             self.led_frame.grid(row=1, column=3, padx=30, pady=15, ipadx=30, ipady=20)
+        elif self.led_frame != None:
+            self.led_frame.destroy()
 
 
         # Confirmation button
         ctk.CTkButton(self, text="Apply", 
-                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), self.key_function_2.get_key_function(), self.key_function_3.get_key_function(), entry.get())).grid(row=8, column=0, columnspan=4, padx=20, pady=10)
+                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), 
+                                                      self.key_function_2.get_key_function(), 
+                                                      self.key_function_3.get_key_function(), 
+                                                      entry.get())).grid(row=2, column=0, columnspan=4, padx=20, pady=10)
       
 def getKeys(type):
 

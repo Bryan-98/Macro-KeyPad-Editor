@@ -1,20 +1,20 @@
-import json
+import json, serial
 import customtkinter as ctk
 from controller.key_editor_win import MacroEditor
 from controller.arduino_connection import send_macros_arduino, restore_saved_macros
 
 class KeyButtonFrame(ctk.CTkFrame):
-    def __init__(self, container, num_key_col, num_key_row, is_key_backlight):
+    def __init__(self, container, num_key_row, num_key_col, is_key_backlight):
         super().__init__(container)
 
         self.num_key_col = num_key_col
         self.num_key_row = num_key_row
         self.toplevel_window  = None
-        self.arduino = None
         self.received_data = None
         self.row = None
         self.col = None
         self.is_key_backlight = is_key_backlight
+        self.arduino = None
 
         for col_index in range(self.num_key_col):
             self.grid_columnconfigure(col_index, weight=1)
@@ -27,18 +27,6 @@ class KeyButtonFrame(ctk.CTkFrame):
         self.macro_keys = {}
         for key in range(self.num_key_col*self.num_key_row):
             self.macro_keys[key] = 0
-
-        # self.num_pad_text = [['0','1','2'],
-        #                      ['3','4','5'],
-        #                      ['6','7','8'],
-        #                      ['9',':',';']]
-        
-        # self.macro_keys = {
-        #     0: '048,000,000', 1: '049,000,000', 2: '050,000,000',
-        #     3: '051,000,000', 4: '052,000,000', 5: '053,000,000',
-        #     6: '054,000,000', 7: '055,000,000', 8: '056,000,000',
-        #     9: '057,000,000', 10: '058,000,000', 11: '059,000,000',
-        # }
 
         # Create a 2-d list containing a button attribute
         self.buttons = [[None for i in range(self.num_key_col)] for j in range(self.num_key_row)]
@@ -54,11 +42,10 @@ class KeyButtonFrame(ctk.CTkFrame):
     def update_text(self, row, col):
 
         try:
-            self.arduino.read()
             if self.toplevel_window  is None or not self.toplevel_window.winfo_exists():
                 self.row = row
                 self.col = col
-                self.toplevel_window  = MacroEditor(self, self.receive_data, self.buttons[row][col].cget("text"), self.is_key_backlight)  # create window if its None or destroyed
+                self.toplevel_window  = MacroEditor(self, self.receive_data, self.buttons[row][col].cget("text"), self.row, self.col, self.is_key_backlight, self.arduino)  # create window if its None or destroyed
                 self.toplevel_window.grab_set()
             else:
                 self.toplevel_window.focus()  # if window exists focus it
@@ -107,8 +94,9 @@ class KeyButtonFrame(ctk.CTkFrame):
             self.arduino = arduino
             self.disable_buttons("normal")
             self.restore_macros(self.macro_keys)
-        except:
-            print("unabled to connect")
+        except(serial.SerialException) as e:
+            print("No connection to device")
+            print(f'error: {e}')
     
     def disable_buttons(self, status):
         for i in range(self.num_key_row):
@@ -119,8 +107,9 @@ class KeyButtonFrame(ctk.CTkFrame):
 
         for i in range(self.num_key_row):
             for j in range(self.num_key_col):
-                self.num_pad_text[i][j] = numText[i][j]
-                self.buttons[i][j].configure(text=numText[i][j])
+                if i < len(numText) and j < len(numText[0]):
+                    self.num_pad_text[i][j] = numText[i][j]
+                    self.buttons[i][j].configure(text=numText[i][j])
 
         for i in macroKeys:
             self.macro_keys.update({int(i): macroKeys[i]})
@@ -130,8 +119,9 @@ class KeyButtonFrame(ctk.CTkFrame):
         saved_macros = []
         for i in macroKeys:
             saved_macros.append(macroKeys[i])
-        
-        key_codes = ';'.join(saved_macros)
-        restore_saved_macros(self.arduino, key_codes)
+
+        if saved_macros[0] != 0:
+            key_codes = ';'.join(saved_macros)
+            restore_saved_macros(self.arduino, key_codes)
 
         
