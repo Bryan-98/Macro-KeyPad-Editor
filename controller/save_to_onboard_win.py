@@ -60,3 +60,13 @@ class OnBoardConfirmation(ctk.CTkToplevel):
 
         cancel_btn = ctk.CTkButton(self, text="Cancel", command=cancel_save)
         cancel_btn.grid(row=1, column=1, padx=5, pady=5, columnspan=1)
+
+def onboard_confirmation(self):
+    if self.onboard_confirmation  is None or not self.onboard_confirmation.winfo_exists():
+        self.onboard_confirmation = OnBoardConfirmation(self)
+        self.onboard_confirmation.set_connection(self.arduino)
+        self.onboard_confirmation.grab_set()
+    else:
+        self.onboard_confirmation.focus()  # if window exists focus it
+
+    self.wait_window(self.onboard_confirmation)

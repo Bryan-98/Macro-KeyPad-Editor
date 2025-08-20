@@ -1,21 +1,19 @@
 import json, pystray, serial
-import time
 import customtkinter as ctk
 from tkinter import Menu, StringVar
-from tkinter.filedialog import askopenfilename, asksaveasfilename
 from pystray import MenuItem as item
 from PIL import Image
 from view.encoder_frame import EncoderFrame
 from view.keys_frame import KeyButtonFrame
 from view.led_frame import LedFrame
-from controller.save_to_onboard_win import OnBoardConfirmation
+from controller.save_to_onboard_win import onboard_confirmation
 from controller.arduino_connection import get_device_info
-from model.custom_profile import create_user_profile
 from controller.com_selector_win import ComSelector
 from controller.create_save_folder import init_folder, last_saved_profile, last_saved_led, last_saved_keys
-from view.splash_screen_win import SplashScreen
+from view.splash_screen_win import start_splash_win
 from view.activity_frame import ActivityLight
 from controller.json_file_creation import create_device_info_json
+from controller.file_managment import open_file, saveas_file
 
 class App(ctk.CTk):
 
@@ -26,11 +24,10 @@ class App(ctk.CTk):
 
         self.center_window(size)
         self.minsize(size[0],size[1])
-        # self.maxsize(size[0],size[1])
+        self.maxsize(size[0],size[1])
         self.grid_columnconfigure((0, 1, 2), weight=1)
         self.grid_rowconfigure((0, 1, 2), weight=1)
         self.iconbitmap("assets\images\macro_pad_icon.ico")
-        self.frames = []
         
         self.selectedPort = None
         self.arduino = None
@@ -52,8 +49,6 @@ class App(ctk.CTk):
         self.num_keypad_col = 3
         self.device_info = None
 
-        self.start_splash_win()
-
         # Create a save folder and create/restore last created profile
         init_folder()
         self.last_saved_profile.set(last_saved_profile())
@@ -67,16 +62,7 @@ class App(ctk.CTk):
         #system tray
         self.system_tray()
 
-    def start_splash_win(self):
-        # Start the splash window and close after 3 seconds
-        if self.splah_win  is None or not self.splah_win.winfo_exists():
-            self.splah_win = SplashScreen(self)
-            self.splah_win.after(3000, lambda:self.splah_win.destroy())
-        else:
-            self.splah_win.focus()
-
-        # Wait for window to close
-        self.wait_window(self.splah_win)
+        start_splash_win(self)
 
     def start_selector_win(self):
         # Start com selector popup
@@ -93,18 +79,17 @@ class App(ctk.CTk):
     def selected_com(self, data):
         self.selectedPort = data
 
-    def restore_profile(self, file):
-        if file is not None:
-            with open(file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            led_light = data['rgb']
-            macro_names = data['macroNames']
-            macro_keys = data['macrosKeys']
-            self.led_frame.set_rgb(led_light[0], led_light[1], led_light[2])
-            self.key_button_widget.set_macro_keys(macro_names,macro_keys)
-            self.key_button_widget.restore_macros(macro_keys)
-
+    def restore_profile(self, data):
+            try:
+                led_light = data['rgb']
+                macro_names = data['macroNames']
+                macro_keys = data['macrosKeys']
+                self.led_frame.set_rgb(led_light[0], led_light[1], led_light[2])
+                self.key_button_widget.set_macro_keys(macro_names,macro_keys)
+                self.key_button_widget.restore_macros(macro_keys)
+            except:
+                raise Exception("*   Device not connected.")
+            
     def create_widget(self):
 
         #Device Name
@@ -144,14 +129,7 @@ class App(ctk.CTk):
 
         def upload_onboard():
             if self.selectedPort != None:
-                if self.onboard_confirmation  is None or not self.onboard_confirmation.winfo_exists():
-                    self.onboard_confirmation = OnBoardConfirmation(self)
-                    self.onboard_confirmation.set_connection(self.arduino)
-                    self.onboard_confirmation.grab_set()
-                else:
-                    self.onboard_confirmation.focus()  # if window exists focus it
-
-                self.wait_window(self.onboard_confirmation)
+                onboard_confirmation(self)
             else:
                 self.error_msg.set("*   Macro KeyPad not connected, can not upload to onboard memory")
                 self.msg_label.configure(text=self.error_msg.get())
@@ -163,14 +141,11 @@ class App(ctk.CTk):
                 device_info()
                 if self.device_info['deviceName'] != "":
                     self.led_frame.set_arduino_connection(self.arduino)
-                    self.frames.append(self.led_frame)
 
                     self.device_entry.configure(text=self.device_info['deviceName'])
-                    self.frames.append(self.device_entry)
 
                     if self.device_info['audioController'] == True:
                         self.encoder_widget.set_arduino_connection(self.arduino)
-                        self.frames.append(self.encoder_widget)
                     else:
                         encoder_visibility(self.device_info['audioController'])
 
@@ -178,14 +153,11 @@ class App(ctk.CTk):
                         resize_button_matrix(self.device_info['keyRow'], self.device_info['keyCol'], self.device_info['ledKeys'])
 
                     self.key_button_widget.set_arduino_connection(self.arduino)
-                    self.frames.append(self.key_button_widget)
                     self.error_msg.set("")
                     self.msg_label.configure(text=self.error_msg.get())
                     self.activity_light.set_activity_status(True)
-                    self.frames.append(self.activity_light)
-                    self.calculate_and_set_window_size()
                 else:
-                    self.error_msg.set("*   Device not Compatible. Please try again.")
+                    self.error_msg.set("*   Device not Compatible. Please check device firmware or connection.")
                     self.msg_label.configure(text=self.error_msg.get())
                     self.activity_light.set_activity_status(False)
 
@@ -206,7 +178,7 @@ class App(ctk.CTk):
         def resize_button_matrix(num_row, num_col, keyLed):
             try:
                 self.key_button_widget.destroy()
-                self.key_button_widget= KeyButtonFrame(self,num_row,num_col, keyLed)
+                self.key_button_widget = KeyButtonFrame(self,num_row,num_col, keyLed)
                 self.key_button_widget.configure(border_width=2.5)
                 self.key_button_widget.grid(row=1, column=1, padx=30, pady=30, ipadx=30, ipady=30)
                 self.key_button_widget.update_idletasks()
@@ -223,31 +195,21 @@ class App(ctk.CTk):
                 print("\nDevice not connected")
                 
 
-        def open_file():
-            if self.selectedPort != None:
-                file = askopenfilename(filetypes =[('Json File', '*.json')])
-                try:
-                    self.restore_profile(file)
-                except(serial.SerialException) as e:
-                    self.error_msg.set("*   Macro KeyPad not connected, can not load profile")
-                    self.msg_label.configure(text=self.error_msg.get())
-            else:
-                self.error_msg.set("*   Macro KeyPad not connected, can not load profile")
+        def get_file():
+            try:
+                data = open_file(self.selectedPort, self.device_info)
+                self.restore_profile(data)
+                self.error_msg.set("")
+                self.msg_label.configure(text=self.error_msg.get())
+            except Exception as e:
+                self.error_msg.set(e)
                 self.msg_label.configure(text=self.error_msg.get())
 
-        def saveas_file():
-            files = [('Json File', '*.json')]
-            filepath = asksaveasfilename(filetypes = files, defaultextension = files)
-
-            led_lights = self.led_frame.get_rgb()
+        def save_file():
+            ledLights = self.led_frame.get_rgb()
             macroNames, macrosKeys = self.key_button_widget.get_macro_keys()
-
-            profile = create_user_profile(led_lights, macroNames, macrosKeys)
-
-            if filepath != "":
-                file_write = open(filepath, mode = 'w')
-                file_write.write(profile)
-                file_write.close()
+            deviceId = self.device_info["deviceId"]
+            saveas_file(ledLights, macroNames, macrosKeys, deviceId)
 
         def quit_program():
             self.encoder_widget.stop_encoder_thread()
@@ -255,8 +217,8 @@ class App(ctk.CTk):
 
         menubar = Menu(self)
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open", command=open_file)
-        filemenu.add_command(label="Save as...", command=saveas_file)
+        filemenu.add_command(label="Open", command=get_file)
+        filemenu.add_command(label="Save as...", command=save_file)
 
         filemenu.add_separator()
 
@@ -268,10 +230,6 @@ class App(ctk.CTk):
         arduinomenu.add_command(label="Upload", command=upload_onboard)
         arduinomenu.add_command(label="Device Info", command=device_info)
         menubar.add_cascade(label="KeyPad", menu=arduinomenu)
-
-        # helpmenu = Menu(menubar, tearoff=0)
-        # helpmenu.add_command(label="Help Index", command=donothing)
-        # menubar.add_cascade(label="Help", menu=helpmenu)
  
         self.config(menu=menubar)
 
@@ -303,40 +261,10 @@ class App(ctk.CTk):
 
         self.geometry('%dx%d+%d+%d' % (size[0], size[1], x, y))
 
-    def calculate_and_set_window_size(self):
-            total_height = 0
-            max_width = 0
-
-            # It's crucial to update idletasks BEFORE querying geometry
-            self.update_idletasks()
-
-            for frame in self.frames:
-                frame_width = frame.winfo_reqwidth()
-                frame_height = frame.winfo_reqheight()
-
-                # Get grid info to extract padx/pady
-                grid_info = frame.grid_info()
-                pady = int(grid_info.get('pady', 0)) * 2 # For top and bottom
-                padx = int(grid_info.get('padx', 0)) * 2 # For left and right
-
-                total_height += frame_height + pady
-                max_width = max(max_width, frame_width + padx)
-
-            # Add some extra padding for the overall window, if desired
-            window_padding_x = 0
-            window_padding_y = 0
-
-            final_width = max_width + window_padding_x
-            final_height = total_height + window_padding_y
-
-            self.geometry(f"{final_width}x{final_height}")
-            self.resizable(True, True) # Optionally make it non-resizable after fitting
-
-
 if __name__ == "__main__":
 
     ctk.set_default_color_theme("assets/themes/default_theme.json")
-    app = App('KeyPad Editor', (1100,619))
+    app = App('KeyPad Editor', (1423,800))
     app.mainloop()
     
     

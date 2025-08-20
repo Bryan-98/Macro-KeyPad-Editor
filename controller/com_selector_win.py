@@ -15,7 +15,6 @@ class ComSelector(ctk.CTkToplevel):
         self.geometry('%dx%d+%d+%d' % (sizex, sizy, x, y))
         self.after(250, lambda: self.iconbitmap('./assets/images/macro_pad_icon.ico'))
 
-
         self.com_options = None
         self.data = data
         self.selectedPort = StringVar(self)
@@ -23,7 +22,6 @@ class ComSelector(ctk.CTkToplevel):
         self.create_widget()
 
     def create_widget(self):
-
         def close_window():
             port_num = getPort(self, self.selectedPort)
             self.data(port_num)

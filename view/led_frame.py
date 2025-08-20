@@ -115,6 +115,7 @@ class LedFrame(ctk.CTkFrame):
                 self.slider_green.configure(state="disabled")
                 self.slider_blue.configure(state="disabled")
                 self.apply_btn.configure(state="disabled")
+                raise Exception("*   Device not connected.") from e 
 
     def save_key_rgb(self):
         try:

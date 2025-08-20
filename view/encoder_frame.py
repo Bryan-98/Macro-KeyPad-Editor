@@ -40,8 +40,6 @@ class EncoderFrame(ctk.CTkFrame):
     def create_widget(self):
         # App selection
         self.options = get_app_names()
-        red_color = (f'#{242:02x}{84:02x}{73:02x}')
-        green_color = (f'#{55:02x}{179:02x}{55:02x}')
 
         # #Encoder 1
         self.encoder1_dropdown = ctk.CTkOptionMenu(self, variable=self.dropdown_variable1, values=self.options, command=lambda event: update_dropdown(1, event))

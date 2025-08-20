@@ -26,3 +26,14 @@ class SplashScreen(ctk.CTkToplevel):
     def create_widget(self):
         splash = ctk.CTkImage(dark_image=Image.open("./assets/images/splash.png"),size=(800, 450))
         ctk.CTkLabel(self, text="", image=splash).pack()
+
+def start_splash_win(self):
+    # Start the splash window and close after 3 seconds
+    if self.splah_win  is None or not self.splah_win.winfo_exists():
+        self.splah_win = SplashScreen(self)
+        self.splah_win.after(3000, lambda:self.splah_win.destroy())
+    else:
+        self.splah_win.focus()
+
+    # Wait for window to close
+    self.wait_window(self.splah_win)

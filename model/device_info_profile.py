@@ -1,9 +1,10 @@
 import json
 
-def create_device_profile(deviceName, version, numberKeys, keyROW, keyCol, audioController, numberEncoders, underGlow, ledKey, lcdScreen):
+def create_device_profile(deviceName, deviceId, version, numberKeys, keyROW, keyCol, audioController, numberEncoders, underGlow, ledKey, lcdScreen):
     
     profile = {
         "deviceName": deviceName,
+        "deviceId": int(deviceId),
         "version": version,
         "numberKey": int(numberKeys),
         "keyRow": int(keyROW),

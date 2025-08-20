@@ -10,20 +10,20 @@ class MacroEditor(ctk.CTkToplevel):
         self.grid_rowconfigure((0, 1, 2), weight=1)
 
         self.title("Macro Editor")
-        s_height = self.winfo_screenheight()
-        s_width = self.winfo_screenwidth()
+        self.s_height = self.winfo_screenheight()
+        self.s_width = self.winfo_screenwidth()
 
-        window_width = 899
-        window_height = 500
+        window_width = 1066
+        window_height = 600
 
         self.row = row
         self.col = col
         self.arduino = arduino
 
         self.minsize(window_width,window_height)
-        # self.maxsize(window_width,window_height)
-        x = (s_width / 2) - (window_width/2)
-        y = (s_height / 2) - (window_height/2)
+        self.maxsize(window_width,window_height)
+        x = (self.s_width / 2) - (window_width/2)
+        y = (self.s_height / 2) - (window_height/2)
         self.geometry('%dx%d+%d+%d' % (window_width, window_height, x, y))
         self.after(250, lambda: self.iconbitmap('./assets/images/macro_pad_icon.ico'))
         
@@ -58,8 +58,9 @@ class MacroEditor(ctk.CTkToplevel):
         else:
             holder_text = "Enter MacroKey Name"
 
-        entry = ctk.CTkEntry(self, placeholder_text=holder_text)
-        entry.grid(row=0, column=0, columnspan=4, padx=20, pady=10)
+        self.entry = ctk.CTkEntry(self, placeholder_text=holder_text)
+        self.entry.grid(row=0, column=0, columnspan=4, padx=20, pady=10)
+        
 
         #Key function selection frames
         self.key_function_1 = KeyFunctionFrame(self)
@@ -85,13 +86,14 @@ class MacroEditor(ctk.CTkToplevel):
             self.led_frame.destroy()
 
 
-        # Confirmation button
-        ctk.CTkButton(self, text="Apply", 
-                      command=lambda: self.applymacro(self.key_function_1.get_key_function(), 
-                                                      self.key_function_2.get_key_function(), 
-                                                      self.key_function_3.get_key_function(), 
-                                                      entry.get())).grid(row=2, column=0, columnspan=4, padx=20, pady=10)
-      
+        # Confirmation button 
+        self.submit_bttn = ctk.CTkButton(self, text="Apply", 
+                                         command=lambda: self.applymacro(self.key_function_1.get_key_function(), 
+                                                                         self.key_function_2.get_key_function(), 
+                                                                         self.key_function_3.get_key_function(), 
+                                                                         self.entry.get()))
+        self.submit_bttn.grid(row=2, column=0, columnspan=4, padx=20, pady=10)
+
 def getKeys(type):
 
     keys = []

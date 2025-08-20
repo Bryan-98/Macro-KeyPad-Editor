@@ -73,7 +73,7 @@ class KeyButtonFrame(ctk.CTkFrame):
         values = key_name[1].split(",")
         codes = []
         for i in values:
-            if i != "0" or i != "":
+            if not (i == 0 or i == "" or i == None):
                 codes.append(str(get_value(i)))
             else:
                 codes.append("000")
@@ -116,12 +116,16 @@ class KeyButtonFrame(ctk.CTkFrame):
 
 
     def restore_macros(self, macroKeys):
-        saved_macros = []
-        for i in macroKeys:
-            saved_macros.append(macroKeys[i])
 
-        if saved_macros[0] != 0:
-            key_codes = ';'.join(saved_macros)
-            restore_saved_macros(self.arduino, key_codes)
+        try:
+            saved_macros = []
+            for i in macroKeys:
+                saved_macros.append(macroKeys[i])
+
+            if saved_macros[0] != 0:
+                key_codes = ';'.join(saved_macros)
+                restore_saved_macros(self.arduino, key_codes)
+        except (serial.SerialException) as e:
+            raise Exception("*   Device not connected.") from e
 
         
