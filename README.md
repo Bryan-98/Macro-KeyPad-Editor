@@ -6,7 +6,7 @@ Using my custom tkinter python program you will be able to change the rgb leds, 
 ## Custom Macro Keypad
 This program is used to control a custom keypad based around an arduino pro micro 5V/16MHz.
 
-[Check out my repo on this project](https://github.com/Bryan-98/audio-macro-keypad)
+GitHub Repo: [Check out my project](https://github.com/Bryan-98/audio-macro-keypad)
 
 ### Complete Build
 ![Complete Built](https://github.com/user-attachments/assets/29a8a2ae-1ed0-4170-b30f-0eed62e24b8b)
